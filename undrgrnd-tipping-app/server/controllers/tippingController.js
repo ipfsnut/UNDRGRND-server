@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 const Tip = require('../models/Tip');
 const metamaskService = require('../services/metamaskService');
 const baseNetworkService = require('../services/baseNetworkService');

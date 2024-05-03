@@ -5,12 +5,12 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 // Import route files
-const tippingRoutes = require('./routes/tipping');
-const warpcastRoutes = require('./routes/warpcast');
+const tippingRoutes = require('../server/routes/tipping');
+const warpcastRoutes = require('../server/routes/warpcast');
 
 // Import middleware functions
-const errorMiddleware = require('./middleware/errorHandling');
-const authMiddleware = require('./middleware/authentication');
+const errorMiddleware = require('../middleware/errorHandling');
+const authMiddleware = require('../middleware/authentication');
 
 // Load environment variables from .env file
 dotenv.config();
