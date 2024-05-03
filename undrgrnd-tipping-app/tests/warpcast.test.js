@@ -1,5 +1,5 @@
 const axios = require('axios');
-const warpcastService = require('../services/warpcastService');
+const warpcastService = require('../services/warpcastService.js');
 
 jest.mock('axios');
 

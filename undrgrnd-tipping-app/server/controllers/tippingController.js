@@ -2,7 +2,7 @@ const User = require('../models/User');
 const Tip = require('../models/Tip');
 const metamaskService = require('../services/metamaskService');
 const baseNetworkService = require('../services/baseNetworkService');
-
+const calculateTotalTips = require('../utils/calculateTotalTips');
 // Send a tip
 exports.sendTip = async (req, res, next) => {
   try {
@@ -79,5 +79,16 @@ exports.getTippingHistory = async (req, res, next) => {
     res.status(200).json({ sentTips, receivedTips });
   } catch (err) {
     next(err);
+  }
+};
+
+const getTotalTips = async (req, res) => {
+  try {
+    const tips = await Tip.find(); // Assuming you have a 'Tip' model
+    const totalTips = calculateTotalTips(tips);
+    res.json({ totalTips });
+  } catch (err) {
+    console.error('Error getting total tips:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
