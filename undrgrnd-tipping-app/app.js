@@ -1,4 +1,5 @@
 // Import required modules and dependencies
+
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -20,15 +21,16 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use('/api/tipping', tippingRoutes);
 app.use(express.json()); // Parse JSON request bodies
 app.use(cors()); // Enable CORS for cross-origin requests
-app.use(errorHandler);
 
 // Mount routes
 app.use('/api/tipping', tippingRoutes);
 app.use('/api/warpcast', authMiddleware, warpcastRoutes); // Apply authentication middleware to Warpcast routes
+
+// Error handler
 app.use(errorHandler);
-app.use('api', routes);
 
 // Connect to the database
 mongoose.connect(process.env.MONGODB_URI, {
