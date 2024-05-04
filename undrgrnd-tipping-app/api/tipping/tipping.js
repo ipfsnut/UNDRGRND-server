@@ -11,4 +11,8 @@ router.get('/balance/:fid', tippingController.getUserBalance);
 // Get tipping history
 router.get('/history/:fid', tippingController.getTippingHistory);
 
+router.post('/', tippingController.createTip);
+router.get('/user/:userId', tippingController.getTipsByUser);
+
+
 module.exports = router;
