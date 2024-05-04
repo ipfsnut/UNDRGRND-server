@@ -1,5 +1,5 @@
-const { getUserProfile } = require('../server/controllers/warpcastController'); 
-const warpcastService = require('../services/warpcastService');
+const { getUserProfile } = require('../api/warpcast/warpcastController'); 
+const warpcastService = require('../api/warpcast/warpcastService');
 
 // Mock request, response, and next function
 const mockReq = (params) => ({

@@ -1,8 +1,9 @@
-const User = require('../../models/User');
-const Tip = require('../models/Tip');
+const User = require('../models/User');
+const tippingService = require('../services/tippingService');
 const metamaskService = require('../services/metamaskService');
 const baseNetworkService = require('../services/baseNetworkService');
-const calculateTotalTips = require('../utils/calculateTotalTips');
+const userService = require('../services/userService'); // New service for user-related operations
+
 // Send a tip
 exports.sendTip = async (req, res, next) => {
   try {
@@ -16,7 +17,8 @@ exports.sendTip = async (req, res, next) => {
     const recipient = await User.findOne({ fid: recipientFid });
 
     // Check sender's balance
-    if (sender.balance < amount) {
+    const senderBalance = await userService.getUserBalance(sender._id);
+    if (senderBalance < amount) {
       return res.status(400).json({ error: 'Insufficient balance' });
     }
 
@@ -27,16 +29,14 @@ exports.sendTip = async (req, res, next) => {
     const transactionHash = await baseNetworkService.sendTransaction(signedTransaction);
 
     // Update user balances
-    sender.balance -= amount;
-    recipient.balance += amount;
-    await sender.save();
-    await recipient.save();
+    await userService.updateUserBalance(sender._id, -amount);
+    await userService.updateUserBalance(recipient._id, amount);
 
     // Create a new Tip document
-    const tip = new Tip({ sender: sender._id, recipient: recipient._id, amount });
-    await tip.save();
+    const tipData = { amount, sender: sender._id, recipient: recipient._id };
+    const newTip = await tippingService.createTip(tipData);
 
-    res.status(200).json({ message: 'Tip sent successfully', transactionHash });
+    res.status(200).json({ message: 'Tip sent successfully', transactionHash, tip: newTip });
   } catch (err) {
     next(err);
   }
@@ -54,7 +54,8 @@ exports.getUserBalance = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({ balance: user.balance });
+    const balance = await userService.getUserBalance(user._id);
+    res.status(200).json({ balance });
   } catch (err) {
     next(err);
   }
@@ -73,22 +74,20 @@ exports.getTippingHistory = async (req, res, next) => {
     }
 
     // Find tips sent or received by the user
-    const sentTips = await Tip.find({ sender: user._id });
-    const receivedTips = await Tip.find({ recipient: user._id });
+    const tips = await tippingService.getTipsByUser(user._id);
 
-    res.status(200).json({ sentTips, receivedTips });
+    res.status(200).json({ tips });
   } catch (err) {
     next(err);
   }
 };
 
-const getTotalTips = async (req, res) => {
+const getTotalTips = async (req, res, next) => {
   try {
-    const tips = await Tip.find(); // Assuming you have a 'Tip' model
+    const tips = await Tip.find().exec();
     const totalTips = calculateTotalTips(tips);
     res.json({ totalTips });
   } catch (err) {
-    console.error('Error getting total tips:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    next(err);
   }
 };

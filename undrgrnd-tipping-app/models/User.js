@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 // Import route files
-const tippingRoutes = require('../server/routes/tipping');
+const tippingRoutes = require('../tipping/tipping');
 const warpcastRoutes = require('../api/warpcast/warpcast');
 
 // Import middleware functions
