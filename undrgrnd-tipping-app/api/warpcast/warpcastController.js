@@ -1,14 +1,18 @@
-const warpcastService = require('./warpcastService');
+const axios = require('axios');
+
+// Warpcast API URL
+const WARPCAST_API_URL = process.env.WARPCAST_API_URL;
 
 // Get user profile
 exports.getUserProfile = async (req, res, next) => {
   try {
-    const { fid } = req.params;
+    const { userId } = req.params;
 
-    // Fetch user profile from Warpcast API
-    const userProfile = await warpcastService.getUserProfile(fid);
+    // Make a request to the Warpcast API to fetch the user profile
+    const response = await axios.get(`${WARPCAST_API_URL}/users/${userId}`);
 
-    res.status(200).json(userProfile);
+    // Return the user profile data
+    res.json(response.data);
   } catch (err) {
     next(err);
   }
@@ -19,24 +23,26 @@ exports.getChannelDetails = async (req, res, next) => {
   try {
     const { channelId } = req.params;
 
-    // Fetch channel details from Warpcast API
-    const channelDetails = await warpcastService.getChannelDetails(channelId);
+    // Make a request to the Warpcast API to fetch the channel details
+    const response = await axios.get(`${WARPCAST_API_URL}/channels/${channelId}`);
 
-    res.status(200).json(channelDetails);
+    // Return the channel details
+    res.json(response.data);
   } catch (err) {
     next(err);
   }
 };
 
-// Get user's following channels
+// Get user following channels
 exports.getUserFollowingChannels = async (req, res, next) => {
   try {
-    const { fid } = req.params;
+    const { userId } = req.params;
 
-    // Fetch user's following channels from Warpcast API
-    const followingChannels = await warpcastService.getUserFollowingChannels(fid);
+    // Make a request to the Warpcast API to fetch the channels the user is following
+    const response = await axios.get(`${WARPCAST_API_URL}/users/${userId}/following/channels`);
 
-    res.status(200).json(followingChannels);
+    // Return the list of channels the user is following
+    res.json(response.data);
   } catch (err) {
     next(err);
   }
@@ -45,12 +51,13 @@ exports.getUserFollowingChannels = async (req, res, next) => {
 // Check if user is following a channel
 exports.isUserFollowingChannel = async (req, res, next) => {
   try {
-    const { fid, channelId } = req.params;
+    const { userId, channelId } = req.params;
 
-    // Check if user is following the channel using Warpcast API
-    const isFollowing = await warpcastService.isUserFollowingChannel(fid, channelId);
+    // Make a request to the Warpcast API to check if the user is following the channel
+    const response = await axios.get(`${WARPCAST_API_URL}/users/${userId}/following/channels/${channelId}`);
 
-    res.status(200).json({ isFollowing });
+    // Return the result (true or false)
+    res.json({ isFollowing: response.data });
   } catch (err) {
     next(err);
   }
