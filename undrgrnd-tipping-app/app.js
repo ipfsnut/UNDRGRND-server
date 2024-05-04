@@ -5,12 +5,13 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 // Import route files
-const tippingRoutes = require('./server/routes/tipping');
-const warpcastRoutes = require('./server/routes/warpcast');
+const tippingRoutes = require('./api/tipping/tipping');
+const warpcastRoutes = require('./api/warpcast/warpcast');
 
 // Import middleware functions
 const errorMiddleware = require('./middleware/errorHandling');
 const authMiddleware = require('./middleware/authentication');
+const errorHandler = require('./middleware/errorHandling');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -21,10 +22,13 @@ const app = express();
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
 app.use(cors()); // Enable CORS for cross-origin requests
+app.use(errorHandler);
 
 // Mount routes
 app.use('/api/tipping', tippingRoutes);
 app.use('/api/warpcast', authMiddleware, warpcastRoutes); // Apply authentication middleware to Warpcast routes
+app.use(errorHandler);
+app.use('api', routes);
 
 // Connect to the database
 mongoose.connect(process.env.MONGODB_URI, {

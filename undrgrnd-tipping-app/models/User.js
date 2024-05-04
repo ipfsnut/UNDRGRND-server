@@ -6,7 +6,7 @@ const cors = require('cors');
 
 // Import route files
 const tippingRoutes = require('../server/routes/tipping');
-const warpcastRoutes = require('../server/routes/warpcast');
+const warpcastRoutes = require('../api/warpcast/warpcast');
 
 // Import middleware functions
 const errorMiddleware = require('../middleware/errorHandling');

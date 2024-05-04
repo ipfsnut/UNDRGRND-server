@@ -1,4 +1,4 @@
-const warpcastService = require('../../services/warpcastService');
+const warpcastService = require('./warpcastService');
 
 // Get user profile
 exports.getUserProfile = async (req, res, next) => {

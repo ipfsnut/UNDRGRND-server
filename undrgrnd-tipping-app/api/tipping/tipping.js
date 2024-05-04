@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const tippingController = require('../controllers/tippingController');
+const tippingController = require('./tippingController');
 
 // Send a tip
 router.post('/send', tippingController.sendTip);

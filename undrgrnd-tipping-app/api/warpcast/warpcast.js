@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const warpcastController = require('../controllers/warpcastController');
+const warpcastController = require('./warpcastController');
 
 // Get user profile
 router.get('/user/:fid', warpcastController.getUserProfile);
